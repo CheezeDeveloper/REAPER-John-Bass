@@ -10,7 +10,7 @@
 
 ### 🔗 Audacity Version
 Using Audacity? Check out the standalone version here:
-[**John Bass for Audacity**](LINK_TO_OTHER_REPO_HERE)
+[**John Bass for Audacity**](https://github.com/CheezeDeveloper/Audacity-John-Bass)
 
 ---
 

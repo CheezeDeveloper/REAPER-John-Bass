@@ -1,0 +1,80 @@
+desc: John Bass
+author: CheezeDev/CheezeDeveloper
+version: 1.0
+// Copyright 2025 CheezeDev/CheezeDeveloper
+// Licensed under the MIT License
+
+// --- THE MENU ---
+// This slider is a Dropdown List.
+slider1:0<0,4,1{Manual Mode,Mild Fry,Deep Fried Meme,Broken Android,THE NUCLEAR OPTION}>Select Preset
+
+// --- THE CONTROLS ---
+slider2:0<0,100,1>Destruction Amount (%)
+slider3:0<0,1,1{Off,On}>Low Quality Mode
+slider4:0<0,1,1{Off,On}>The Ear Piercer (Beep)
+
+@init
+phase = 0;
+
+@slider
+// --- PRESET LOGIC (The Brains) ---
+
+// Preset 1: Mild Fry (Just a little loud)
+slider1 == 1 ? (
+    slider2 = 25; 
+    slider3 = 0; 
+    slider4 = 0;
+);
+
+// Preset 2: Deep Fried Meme (Crunchy)
+slider1 == 2 ? (
+    slider2 = 60; 
+    slider3 = 0; 
+    slider4 = 0;
+);
+
+// Preset 3: Broken Android (Low Quality + Loud)
+slider1 == 3 ? (
+    slider2 = 80; 
+    slider3 = 1; 
+    slider4 = 0;
+);
+
+// Preset 4: NUCLEAR (EVERYTHING MAXED)
+slider1 == 4 ? (
+    slider2 = 100; 
+    slider3 = 1; 
+    slider4 = 1;
+);
+
+// Note: If Preset is 0 (Manual), we let you control the sliders yourself.
+
+// --- CALCULATE SOUND ---
+drive = 1 + (slider2 * 0.5);
+
+@sample
+// --- STEP 1: ADD THE BEEP ---
+slider4 ? (
+    phase += (2 * $pi * 3000) / srate; 
+    phase > (2 * $pi) ? phase -= (2 * $pi);
+    beep = sin(phase) * 0.2;
+    spl0 += beep;
+    spl1 += beep;
+);
+
+// --- STEP 2: BOOST ---
+spl0 = spl0 * drive;
+spl1 = spl1 * drive;
+
+// --- STEP 3: BITCRUSH ---
+slider3 ? (
+    resolution = 8; // Even lower quality now
+    spl0 = floor(spl0 * resolution) / resolution;
+    spl1 = floor(spl1 * resolution) / resolution;
+);
+
+// --- STEP 4: HARD CLIPPER ---
+spl0 > 1 ? spl0 = 1;
+spl0 < -1 ? spl0 = -1;
+spl1 > 1 ? spl1 = 1;
+spl1 < -1 ? spl1 = -1;
